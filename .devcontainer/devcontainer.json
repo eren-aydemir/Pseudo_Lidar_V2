@@ -2,11 +2,14 @@
 	"name": "Pseudo LiDAR Container",
 	"build": {"dockerfile": "Dockerfile"},
 	"runArgs": [ "--gpus", "all", "-it", "--rm", "--runtime=nvidia", "--ipc=host", "--ulimit", "memlock=-1"],
+	"mounts": [
+		"source=/mnt/lustre/dgxuser/public_datasets_original/KITTI,target=/workspaces/dataset,type=bind,consistency=cached"
+	  ],
 	"customizations": 
 	{
-		"vscode": 
+		"vscode":
 		{
-			"settings": 
+			"settings":
 			{ 
 				"python.defaultInterpreterPath": "/usr/local/bin/python",
 				"python.linting.enabled": true,
