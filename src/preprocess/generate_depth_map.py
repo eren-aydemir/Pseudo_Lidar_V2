@@ -4,7 +4,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import kitti_util
 import numpy as np
-import scipy.misc as ssc
+import imageio as ssc
 
 
 def generate_dispariy_from_velo(pc_velo, height, width, calib):
