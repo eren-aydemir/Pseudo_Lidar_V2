@@ -108,3 +108,7 @@ venv.bak/
 
 # large checkpoint files
 *.pth
+
+# dataset and results folder
+/results
+/dataset
