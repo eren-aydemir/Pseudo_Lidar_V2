@@ -4,6 +4,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import kitti_util
 import numpy as np
+import open3d as o3d
 
 
 def project_disp_to_depth(calib, depth, max_high):
@@ -28,6 +29,8 @@ if __name__ == '__main__':
     parser.add_argument('--max_high', type=int, default=1)
     args = parser.parse_args()
 
+    save_pcd = False
+
     assert os.path.isdir(args.depth_dir)
     assert os.path.isdir(args.calib_dir)
 
@@ -43,8 +46,17 @@ if __name__ == '__main__':
         calib = kitti_util.Calibration(calib_file)
         depth_map = np.load(args.depth_dir + '/' + fn)
         lidar = project_disp_to_depth(calib, depth_map, args.max_high)
-        # pad 1 in the indensity dimension
-        lidar = np.concatenate([lidar, np.ones((lidar.shape[0], 1))], 1)
-        lidar = lidar.astype(np.float32)
-        lidar.tofile('{}/{}.bin'.format(args.save_dir, predix))
+        # pad 1 in the intensity dimension
+
+        if save_pcd:
+            lidar = lidar.astype(np.float32)
+            pcd = o3d.geometry.PointCloud()
+            pcd.points = o3d.utility.Vector3dVector(lidar)
+
+            o3d.io.write_point_cloud('{}/{}.pcd'.format(args.save_dir, predix), pcd)
+        else:
+            lidar = np.concatenate([lidar, np.ones((lidar.shape[0], 1))], 1)
+            lidar = lidar.astype(np.float32)
+            lidar.tofile('{}/{}.bin'.format(args.save_dir, predix))
+            
         print('Finish Depth {}'.format(predix))
